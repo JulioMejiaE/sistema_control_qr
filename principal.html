@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Sistema de Control de Acceso - Demo</title>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+<body>
+  <h1>Sistema de Control de Acceso</h1>
+
+  <!-- Selector de zona -->
+  <label for="zona">Selecciona la zona:</label>
+  <select id="zona">
+    <option value="A">Zona A</option>
+    <option value="B">Zona B</option>
+    <option value="C">Zona C</option>
+  </select>
+
+  <br><br>
+
+  <!-- Cámara para leer QR -->
+  <div id="reader" style="width:300px;"></div>
+
+  <script>
+    // 🚀 Definir permisos de prueba según roles
+    const permisos = {
+      "Empleado": ["A", "B"],  // Puede entrar a Zona A y B
+      "Seguridad": ["A", "B", "C"], // Acceso total
+      "Invitado": ["A"] // Solo acceso a Zona A
+    };
+
+    // 🚀 Inicializar lector QR
+    function onScanSuccess(decodedText, decodedResult) {
+      let zonaActual = document.getElementById("zona").value;
+
+      // En este demo el QR contiene directamente el "Rol"
+      let rol = decodedText;
+
+      if (permisos[rol] && permisos[rol].includes(zonaActual)) {
+        alert(`✅ Acceso permitido a Zona ${zonaActual} para rol: ${rol}`);
+      } else {
+        alert(`❌ Acceso denegado a Zona ${zonaActual} para rol: ${rol}`);
+      }
+    }
+
+    let html5QrcodeScanner = new Html5QrcodeScanner(
+      "reader", { fps: 10, qrbox: 250 }
+    );
+    html5QrcodeScanner.render(onScanSuccess);
+  </script>
+</body>
+</html>

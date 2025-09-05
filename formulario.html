@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Usuarios</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            padding: 20px;
+        }
+
+        form {
+            width: 320px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px;
+            width: 100%;
+            background: #007bff;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        #resultado {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        ul {
+            margin-top: 20px;
+            padding: 0;
+            list-style: none;
+        }
+
+        li {
+            background: #e9ecef;
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Registro de Usuario</h2>
+
+    <form id="registroForm">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="password">Contraseña:</label>
+        <input type="password" id="password" name="password" required>
+
+        <label for="edad">Edad:</label>
+        <input type="number" id="edad" name="edad" required>
+        <p id="resultado2"></p>
+
+        <button type="submit">Registrar</button>
+    </form>
+
+    <p id="resultado"></p>
+    <h3>Usuarios registrados:</h3>
+    <ul id="listaUsuarios"></ul>
+
+    <script>
+        const formulario = document.getElementById("registroForm");
+        const resultado = document.getElementById("resultado");
+        const resultado2 = document.getElementById("resultado2");
+        const listaUsuarios = document.getElementById("listaUsuarios");
+
+        // Array para guardar usuarios registrados
+        let usuarios = [];
+
+        formulario.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            let nombre = document.getElementById("nombre").value.trim();
+            let email = document.getElementById("email").value.trim().toLowerCase();
+            let password = document.getElementById("password").value;
+            let edad = parseInt(document.getElementById("edad").value);
+
+            // --- Validaciones ---
+            if (nombre === "" || email === "" || password === "" || isNaN(edad)) {
+                resultado.textContent = "❌ Todos los campos son obligatorios.";
+                resultado.style.color = "red";
+                return;
+            }
+
+            if (!email.includes("@") || !email.includes(".")) {
+                resultado.textContent = "❌ El email no es válido.";
+                resultado.style.color = "red";
+                return;
+            }
+
+            if (password.length < 6) {
+                resultado.textContent = "❌ La contraseña debe tener al menos 6 caracteres.";
+                resultado.style.color = "red";
+                return;
+            }
+
+            if (edad < 18) {
+                resultado.textContent = "❌ Debes ser mayor de 18 años para registrarte.";
+                resultado.style.color = "red";
+                return;
+            }
+
+            // --- Validar correo repetido ---
+            let existe = usuarios.some(usuario => usuario.email === email);
+            if (existe) {
+                resultado.textContent = "❌ El email ya está registrado.";
+                resultado.style.color = "red";
+                return;
+            }
+
+            let exite2 = usuarios.some(usuario => usuario.password === password)
+            if (exite2) {
+                resultado2.textContent = "Esa contraseña ya la usa juliomejia@gmail.com";
+                resultado2.style.color = "black";
+                setTimeout(() => {
+                    resultado2.textContent = "";
+                }, 3000);
+            }
+
+            // --- Registro exitoso ---
+            let nuevoUsuario = { nombre, email, password, edad };
+            usuarios.push(nuevoUsuario);
+
+            resultado.textContent = `✅ Usuario ${nombre} registrado correctamente.`;
+            resultado.style.color = "green";
+
+            // Mostrar en la lista
+            let item = document.createElement("li");
+            item.textContent = `${nombre} (${email}),${password}, ${edad} años`;
+            listaUsuarios.appendChild(item);
+
+            // Limpiar formulario
+            formulario.reset();
+        });
+    </script>
+
+</body>
+
+</html>
